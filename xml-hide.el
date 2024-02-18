@@ -33,12 +33,14 @@
 (defun xml-show-all ()
   "Show all hidden XML tags in the current buffer."
   (interactive)
-  (let ((pos (point-min)))
+  (let ((pos (point-min))
+        (inhibit-read-only t))
     (while (< (setq pos (next-overlay-change pos)) (point-max))
       (dolist (ol (overlays-at pos))
         (if (overlay-get ol 'xml-tag)
-            (delete-overlay ol)))))
-  (remove-text-properties (point-min) (point-max) '(read-only t)))
+            (progn
+              (remove-text-properties pos (next-overlay-change pos) '(read-only . nil))
+              (delete-overlay ol)))))))
 
 ;;;###autoload
 (define-minor-mode xml-hide-mode
