@@ -53,6 +53,6 @@ Null prefix argument turns off the mode."
             map)
   (if xml-hide-mode
       (hide-xml-tags)
-    (show-all)))
+    (xml-show-all)))
 
 (provide 'xml-hide)
