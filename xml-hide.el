@@ -40,6 +40,7 @@
             (delete-overlay ol)))))
   (remove-text-properties (point-min) (point-max) '(read-only t)))
 
+;;;###autoload
 (define-minor-mode xml-hide-mode
   "Toggle XML hide mode.
 With no argument, this command toggles the mode.
