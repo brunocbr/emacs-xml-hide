@@ -6,6 +6,14 @@
 
 ;;; Commentary:
 ;; A package to hide XML tags in Emacs.
+;; Heavily inspired by sgml-mode.
+
+(or (get 'xml-tag 'invisible)
+    (setplist 'xml-tag
+	            (append '(invisible t
+			                            rear-nonsticky t
+			                            read-only t)
+		                  (symbol-plist 'xml-tag))))
 
 (defgroup xml-hide nil
   "Hide XML tags in Emacs."
@@ -23,11 +31,11 @@
     (goto-char (point-min))
     (while (re-search-forward "<[^<>]*>" nil t)
       (let ((mb (match-beginning 0))
-            (me (match-end 0)))
-        (put-text-property mb me 'read-only t)
+            (me (match-end 0))
+            (inhibit-read-only t))
+        (put-text-property mb me 'category 'xml-tag)
         (let ((ov (make-overlay mb me)))
           (overlay-put ov 'xml-tag t)
-          (overlay-put ov 'display (propertize " " 'invisible t 'intangible t))
           (overlay-put ov 'before-string xml-hide-replacement-string))))))
 
 (defun xml-show-all ()
@@ -39,7 +47,7 @@
       (dolist (ol (overlays-at pos))
         (if (overlay-get ol 'xml-tag)
             (progn
-              (remove-text-properties pos (next-overlay-change pos) '(read-only . nil))
+              (remove-text-properties pos (next-overlay-change pos) '(category . nil))
               (delete-overlay ol)))))))
 
 ;;;###autoload
